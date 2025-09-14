@@ -18,7 +18,7 @@ class ComunidadApi {
         .baseUrl("http://192.168.1.10:8081") // Corregir la URL base
         .addConverterFactory(
             GsonConverterFactory.create(
-                GsonBuilder().setLenient().create() // Configurar Gson para ser tolerante
+                GsonBuilder().setLenient().create()
             )
         )
         .build()
