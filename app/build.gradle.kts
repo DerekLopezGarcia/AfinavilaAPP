@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "es.afinavila"
-        minSdk = 31
+        minSdk = 21
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -69,8 +69,8 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
     //pdfviewer
-    implementation(libs.androidx.pdf.viewer.fragment)
-    implementation(libs.androidx.webkit)
-    implementation(libs.accompanist.pager)
+    implementation(libs.androidx.compose.material.icons.extended)
+
+
 }
 

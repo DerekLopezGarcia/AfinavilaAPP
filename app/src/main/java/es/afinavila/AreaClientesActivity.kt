@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,6 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +54,9 @@ import es.afinavila.ui.theme.primaryLight
 import es.afinavila.ui.theme.scrimLight
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+
 
 class AreaClientesActivity : ComponentActivity() {
     internal val getIdComunidadByCodAccesUseCase: GetIdComunidadByCodAccesUseCase by inject()
@@ -68,6 +77,8 @@ fun AreaClientesScreen() {
     var codAcceso by remember { mutableStateOf("") }
     val activity = (context as? AreaClientesActivity)
     var errorTexto: Boolean = false
+    var passwordVisible by remember { mutableStateOf(false)
+    }
 
     Scaffold(
         topBar = {
@@ -136,7 +147,22 @@ fun AreaClientesScreen() {
                     .border(
                         width = 1.dp,
                         color = if (errorTexto) onErrorContainerLight else primaryLight.copy(alpha = 0.5f)
+                    ),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    Icon(
+                        imageVector = image,
+                        contentDescription = if (passwordVisible) "Ocultar" else "Mostrar",
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clickable { passwordVisible = !passwordVisible }
                     )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {

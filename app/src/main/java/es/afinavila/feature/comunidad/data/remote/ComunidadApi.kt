@@ -15,7 +15,7 @@ import okhttp3.ResponseBody
 class ComunidadApi {
 
     private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.1.12:8081") // Corregir la URL base
+        .baseUrl("http://192.168.1.10:8081") // Corregir la URL base
         .addConverterFactory(
             GsonConverterFactory.create(
                 GsonBuilder().setLenient().create() // Configurar Gson para ser tolerante
