@@ -23,7 +23,6 @@ Aplicación móvil desarrollada para la empresa **Afinavila**, dedicada a la ges
 - 🛠️ **Entorno de desarrollo**: Android Studio
 - 🗂️ **Backend/API**: Ktor (Kotlin)
 - 🗃️ **Base de datos**: SQL
-- 📄 **Visor de PDFs**: AndroidX PDF Viewer
 
 ---
 
