@@ -117,6 +117,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     // OkHttp
     implementation(libs.okhttp)
+    implementation(libs.androidx.security.crypto)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 }

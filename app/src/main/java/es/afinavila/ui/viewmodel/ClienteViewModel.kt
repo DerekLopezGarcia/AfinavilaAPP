@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import es.afinavila.BuildConfig
+import androidx.security.crypto.EncryptedFile
+import androidx.security.crypto.MasterKeys
 
 data class ClienteUiState(
     val comunidadNombre: String = "",
@@ -34,6 +36,7 @@ class ClienteViewModel(
 
     private val _pdfFile = MutableStateFlow<File?>(null)
     val pdfFile: StateFlow<File?> = _pdfFile.asStateFlow()
+    private var encryptedPdfFile: File? = null
 
     private val _pageCount = MutableStateFlow(0)
     val pageCount: StateFlow<Int> = _pageCount.asStateFlow()
@@ -103,8 +106,22 @@ class ClienteViewModel(
                     onSuccess = { bytes ->
                         try {
                             val pdfDir = File(app.cacheDir, "pdfs").also { it.mkdirs() }
+                            val encryptedFile = File(pdfDir, "pdf_${archivo.id}.enc")
+                            val encrypted = EncryptedFile.Builder(
+                                encryptedFile,
+                                app,
+                                MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+                                EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+                            ).build()
+                            encrypted.openFileOutput().use { it.write(bytes) }
+
+                            // PdfRenderer needs a seekable file. Keep only a temporary
+                            // plaintext copy while the document is actively displayed.
                             val file = File(pdfDir, "pdf_${archivo.id}.pdf")
-                            file.writeBytes(bytes)
+                            encrypted.openFileInput().use { input ->
+                                file.outputStream().use { output -> input.copyTo(output) }
+                            }
+                            encryptedPdfFile = encryptedFile
                             withContext(Dispatchers.Main) {
                                 _pdfFile.value = file
                             }
@@ -134,7 +151,9 @@ class ClienteViewModel(
 
     fun closePdf() {
         _pdfFile.value?.delete()
+        encryptedPdfFile?.delete()
         _pdfFile.value = null
+        encryptedPdfFile = null
         _pageCount.value = 0
         _state.value = _state.value.copy(pdfOpen = null)
     }

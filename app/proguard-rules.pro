@@ -24,3 +24,7 @@
 # reflection. These classes define the API wire format.
 -keep class es.afinavila.feature.comunidad.domain.** { *; }
 -keep class es.afinavila.feature.comunidad.data.remote.** { *; }
+
+# Tink references compile-time Error Prone annotations that are not packaged
+# in the Android runtime.
+-dontwarn com.google.errorprone.annotations.**
