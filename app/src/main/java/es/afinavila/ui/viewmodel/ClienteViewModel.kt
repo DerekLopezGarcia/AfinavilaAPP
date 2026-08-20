@@ -13,6 +13,7 @@ import android.util.Log
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import es.afinavila.BuildConfig
 
 data class ClienteUiState(
     val comunidadNombre: String = "",
@@ -60,7 +61,7 @@ class ClienteViewModel(
                     return@launch
                 }
 
-                Log.d("Afinavila", "getMe nombre: $nombre")
+                if (BuildConfig.DEBUG) Log.d("Afinavila", "getMe nombre: $nombre")
 
                 // Segunda llamada: archivos
                 val archivosResult = repository.getArchivosSession()
@@ -78,7 +79,7 @@ class ClienteViewModel(
                     )
                 }
             } catch (e: Exception) {
-                Log.e("Afinavila", "load error", e)
+                if (BuildConfig.DEBUG) Log.e("Afinavila", "load error", e)
                 withContext(Dispatchers.Main) {
                     _state.value = _state.value.copy(loading = false, error = "Error de conexión")
                 }

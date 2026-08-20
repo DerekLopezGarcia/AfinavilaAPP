@@ -20,6 +20,14 @@ val hasReleaseSigning = releaseKeystore.exists() &&
     !releaseKeyAlias.isNullOrBlank() &&
     !releaseKeyPassword.isNullOrBlank()
 
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.name == "bundleRelease" || it.name == "assembleRelease" }) {
+        require(hasReleaseSigning) {
+            "Release signing is required. Set KS_KEYSTORE_PATH, KS_STORE_PASSWORD, KS_KEY_ALIAS and KS_KEY_PASSWORD."
+        }
+    }
+}
+
 android {
     namespace = "es.afinavila"
     compileSdk = 35

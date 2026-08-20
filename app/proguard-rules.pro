@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep Retrofit/Gson models and remote service contracts available to release
+# reflection. These classes define the API wire format.
+-keep class es.afinavila.feature.comunidad.domain.** { *; }
+-keep class es.afinavila.feature.comunidad.data.remote.** { *; }
