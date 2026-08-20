@@ -11,7 +11,10 @@ val releaseKeyAlias = (findProperty("keystore.keyAlias") as String?)
     ?: System.getenv("KS_KEY_ALIAS")
 val releaseKeyPassword = (findProperty("keystore.keyPassword") as String?)
     ?: System.getenv("KS_KEY_PASSWORD")
-val releaseKeystore = file("../afinavila-release.jks")
+val releaseKeystorePath = (findProperty("keystore.file") as String?)
+    ?: System.getenv("KS_KEYSTORE_PATH")
+    ?: "../afinavila-release.jks"
+val releaseKeystore = file(releaseKeystorePath)
 val hasReleaseSigning = releaseKeystore.exists() &&
     !releaseStorePassword.isNullOrBlank() &&
     !releaseKeyAlias.isNullOrBlank() &&
@@ -25,8 +28,8 @@ android {
         applicationId = "es.afinavila"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

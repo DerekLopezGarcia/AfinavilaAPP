@@ -19,7 +19,7 @@ Aplicación móvil desarrollada para la empresa **Afinavila**, dedicada a la ges
 
 ## 🚀 Requisitos técnicos
 
-- 📱 **Sistema operativo**: Android 12 o superior (API 31+)
+- 📱 **Sistema operativo**: Android 5.0 o superior (API 21+)
 - 🛠️ **Entorno de desarrollo**: Android Studio
 - 🗂️ **Backend/API**: Ktor (Kotlin)
 - 🗃️ **Base de datos**: SQL
