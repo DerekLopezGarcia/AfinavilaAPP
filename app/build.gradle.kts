@@ -5,6 +5,18 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val releaseStorePassword = (findProperty("keystore.storePassword") as String?)
+    ?: System.getenv("KS_STORE_PASSWORD")
+val releaseKeyAlias = (findProperty("keystore.keyAlias") as String?)
+    ?: System.getenv("KS_KEY_ALIAS")
+val releaseKeyPassword = (findProperty("keystore.keyPassword") as String?)
+    ?: System.getenv("KS_KEY_PASSWORD")
+val releaseKeystore = file("../afinavila-release.jks")
+val hasReleaseSigning = releaseKeystore.exists() &&
+    !releaseStorePassword.isNullOrBlank() &&
+    !releaseKeyAlias.isNullOrBlank() &&
+    !releaseKeyPassword.isNullOrBlank()
+
 android {
     namespace = "es.afinavila"
     compileSdk = 35
@@ -22,18 +34,22 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("../afinavila-release.jks")
-            storePassword = property("keystore.storePassword") ?: System.getenv("KS_PASSWORD") ?: ""
-            keyAlias = property("keystore.keyAlias") ?: "afinavila-key"
-            keyPassword = property("keystore.keyPassword") ?: System.getenv("KS_PASSWORD") ?: ""
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
         }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -23,17 +23,27 @@ class ComunidadApi {
     private val cookieStore = mutableListOf<Cookie>()
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.HEADERS
+        level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BASIC
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
     }
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .cookieJar(object : CookieJar {
-            override fun loadForRequest(url: HttpUrl): List<Cookie> = cookieStore
+            override fun loadForRequest(url: HttpUrl): List<Cookie> = synchronized(cookieStore) {
+                cookieStore.filter { it.matches(url) }
+            }
             override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-                cookies.forEach { newCookie ->
-                    cookieStore.removeAll { it.name == newCookie.name && it.domain == newCookie.domain }
-                    cookieStore.add(newCookie)
+                synchronized(cookieStore) {
+                    cookies.forEach { newCookie ->
+                        cookieStore.removeAll { it.name == newCookie.name && it.domain == newCookie.domain && it.path == newCookie.path }
+                        if (!newCookie.expiresAt.let { it < System.currentTimeMillis() }) {
+                            cookieStore.add(newCookie)
+                        }
+                    }
                 }
             }
         })
