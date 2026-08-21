@@ -16,17 +16,23 @@ class ComunidadDataRepository(private val comunidadApi: ComunidadApi) : Comunida
         return try {
             val response = comunidadApi.service.login(LoginRequest(codigoAcceso))
             if (response.isSuccessful) {
-                val comunidad = response.body() ?: return Result.failure(Exception("Respuesta vacía"))
+                val comunidad = response.body() ?: return Result.failure(Exception("Respuesta vacía del servidor"))
                 comunidadApi.comunidadNombre = comunidad.nombre
                 cachedNombre = comunidad.nombre
                 Result.success(comunidad)
             } else {
-                if (BuildConfig.DEBUG) Log.e("Repo", "Login failed: ${response.code()}")
-                Result.failure(Exception("Código incorrecto"))
+                val errorCode = response.code()
+                if (BuildConfig.DEBUG) Log.e("Repo", "Login failed: $errorCode")
+                val errorMessage = when (errorCode) {
+                    401, 403 -> "Código incorrecto"
+                    500 -> "Error interno del servidor (500)"
+                    else -> "Error del servidor ($errorCode)"
+                }
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) Log.e("Repo", "Login error", e)
-            Result.failure(e)
+            Result.failure(Exception("Error de red: ${e.localizedMessage ?: e.message ?: "Desconocido"}"))
         }
     }
 

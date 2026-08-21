@@ -5,6 +5,8 @@
         <domain includeSubdomains="true">www.afinavila.es</domain>
         <domain includeSubdomains="true">afinavila.es</domain>
         <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/ca_cert" />
             <certificates src="@raw/server_cert" />
         </trust-anchors>
     </domain-config>

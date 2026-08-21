@@ -51,9 +51,12 @@ class LoginViewModel(private val repository: ComunidadRepository) : ViewModel() 
                             )
                         }
                     },
-                    onFailure = {
+                    onFailure = { failure ->
                         withContext(Dispatchers.Main) {
-                            _state.value = _state.value.copy(loading = false, error = "Código incorrecto")
+                            _state.value = _state.value.copy(
+                                loading = false,
+                                error = failure.message ?: "Error desconocido"
+                            )
                         }
                     }
                 )
