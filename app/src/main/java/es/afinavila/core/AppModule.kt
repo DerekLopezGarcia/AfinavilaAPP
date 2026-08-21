@@ -15,7 +15,7 @@ import org.koin.dsl.module
 @ComponentScan("es.afinavila")
 class Appmodule {
     val appModule = module {
-        single { ComunidadApi() }
+        single { ComunidadApi(androidContext()) }
         single<ComunidadRepository> { ComunidadDataRepository(get()) }
         single { LoginViewModel(get()) }
         single { ClienteViewModel(get(), androidContext() as android.app.Application) }

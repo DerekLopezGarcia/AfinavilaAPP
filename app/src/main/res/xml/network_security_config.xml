@@ -5,11 +5,4 @@
         <domain includeSubdomains="true">www.afinavila.es</domain>
         <domain includeSubdomains="true">afinavila.es</domain>
     </domain-config>
-    
-    <!-- Desarrollo local: HTTP (opcional) -->
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.10</domain>
-        <domain includeSubdomains="true">192.168.1.16</domain>
-    </domain-config>
-
 </network-security-config>
